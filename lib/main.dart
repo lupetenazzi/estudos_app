@@ -20,10 +20,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Estudos App',
-      theme: AppTheme.lightTheme,
+      theme: AppTheme.lightTheme,      
       home: Scaffold(
-        appBar: AppBar(title: const Text('Estudos App')),
-        body: const Center(child: Text('Supabase conectado!')),
+      appBar: AppBar(title: const Text('Estudos App')),
+      body: const Center(child: Text('Supabase conectado!')),
       ),
     );
   }
