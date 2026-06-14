@@ -30,11 +30,26 @@ class Tasks extends Table {
   
 }
 
-@DriftDatabase(tables: [
-  Axes, 
-  Tasks
-  ])
-  
+@DriftAccessor(tables: [Tasks, Axes])
+class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
+  TaskDao(super.db);
+
+  Future<List<TaskData>> getAllTasks() => select(tasks).get();
+
+  Future<List<TaskData>> getPendingTasks() =>
+      (select(tasks)..where((t) => t.isCompleted.equals(false))).get();
+
+  Future<int> insertTask(TasksCompanion task) => into(tasks).insert(task);
+
+  Future<void> completeTask(int id) =>
+      (update(tasks)..where((t) => t.id.equals(id)))
+          .write(const TasksCompanion(isCompleted: Value(true)));
+
+  Future<void> deleteTask(int id) =>
+      (delete(tasks)..where((t) => t.id.equals(id))).go();
+}
+
+@DriftDatabase(tables: [Axes, Tasks], daos: [TaskDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

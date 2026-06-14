@@ -3,6 +3,21 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
+mixin _$TaskDaoMixin on DatabaseAccessor<AppDatabase> {
+  $AxesTable get axes => attachedDatabase.axes;
+  $TasksTable get tasks => attachedDatabase.tasks;
+  TaskDaoManager get managers => TaskDaoManager(this);
+}
+
+class TaskDaoManager {
+  final _$TaskDaoMixin _db;
+  TaskDaoManager(this._db);
+  $$AxesTableTableManager get axes =>
+      $$AxesTableTableManager(_db.attachedDatabase, _db.axes);
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db.attachedDatabase, _db.tasks);
+}
+
 class $AxesTable extends Axes with TableInfo<$AxesTable, Axe> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -701,6 +716,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AxesTable axes = $AxesTable(this);
   late final $TasksTable tasks = $TasksTable(this);
+  late final TaskDao taskDao = TaskDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
