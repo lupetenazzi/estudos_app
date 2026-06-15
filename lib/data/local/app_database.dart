@@ -47,6 +47,14 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
 
   Future<void> deleteTask(int id) =>
     (delete(tasksTable)..where((t) => t.id.equals(id))).go();
+
+  Future<void> uncompleteTask(int id) =>
+    (update(tasksTable)..where((t) => t.id.equals(id)))
+      .write(const TasksTableCompanion(isCompleted: Value(false)));
+
+  Future<void> updateTask(TasksTableCompanion task, int id) =>
+    (update(tasksTable)..where((t) => t.id.equals(id))).write(task);
+
 }
 
 @DriftDatabase(tables: [Axes, TasksTable], daos: [TaskDao])

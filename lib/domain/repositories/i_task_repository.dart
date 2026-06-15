@@ -6,4 +6,6 @@ abstract interface class ITaskRepository {
   Future<void> createTask(Task task);
   Future<void> completeTask(int id);
   Future<void> deleteTask(int id);
+  Future<void> uncompleteTask(int id);
+  Future<void> updateTask(Task task);
 }

@@ -37,6 +37,16 @@ class TaskRepositoryImpl implements ITaskRepository {
   }
 
   @override
+  Future<void> uncompleteTask(int id) async {
+    await _taskDao.uncompleteTask(id);
+  }
+
+  @override
+  Future<void> updateTask(domain.Task task) async {
+    await _taskDao.updateTask(TaskModel.toCompanion(task), task.id);
+  }
+
+  @override
   Future<void> deleteTask(int id) async {
     await _taskDao.deleteTask(id);
     try {

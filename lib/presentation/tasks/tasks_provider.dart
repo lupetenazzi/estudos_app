@@ -6,6 +6,8 @@ import 'package:estudos_app/domain/entities/task.dart' as domain;
 import 'package:estudos_app/domain/usecases/get_task.dart';
 import 'package:estudos_app/domain/usecases/create_task.dart';
 import 'package:estudos_app/domain/usecases/complete_task.dart';
+import 'package:estudos_app/domain/usecases/uncomplete_task.dart';
+import 'package:estudos_app/domain/usecases/update_task.dart';
 import 'package:estudos_app/domain/usecases/delete_task.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) => AppDatabase());
@@ -41,4 +43,12 @@ final completeTaskProvider = Provider<CompleteTask>((ref) {
 
 final deleteTaskProvider = Provider<DeleteTask>((ref) {
   return DeleteTask(ref.watch(taskRepositoryProvider));
+});
+
+final uncompleteTaskProvider = Provider<UncompleteTask>((ref) {
+  return UncompleteTask(ref.watch(taskRepositoryProvider));
+});
+
+final updateTaskProvider = Provider<UpdateTask>((ref) {
+  return UpdateTask(ref.watch(taskRepositoryProvider));
 });
