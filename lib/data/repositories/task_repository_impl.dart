@@ -1,4 +1,5 @@
 import "package:estudos_app/data/local/app_database.dart";
+import 'package:flutter/foundation.dart';
 import "../../data/models/task_model.dart";
 import 'package:estudos_app/domain/entities/task.dart' as domain;
 import "../../data/datasources/supabase_task_datasource.dart";
@@ -16,8 +17,9 @@ class TaskRepositoryImpl implements ITaskRepository {
     await _taskDao.insertTask(TaskModel.toCompanion(task));
     try {
       await _remoteDatasource.insertTask(task);
-    } catch (_) {
-      
+    } catch (e, stack) {
+      debugPrint('Supabase error: $e');
+      debugPrint('Stack: $stack');
     }
   }
 
@@ -26,7 +28,10 @@ class TaskRepositoryImpl implements ITaskRepository {
     await _taskDao.completeTask(id);
     try {
       await _remoteDatasource.completeTask(id);
-    } catch (_) {}
+    } catch (e, stack) {
+      debugPrint('Supabase error: $e');
+      debugPrint('Stack: $stack');
+    }
   }
 
   @override
@@ -34,7 +39,10 @@ class TaskRepositoryImpl implements ITaskRepository {
     await _taskDao.deleteTask(id);
     try {
       await _remoteDatasource.deleteTask(id);
-    } catch (_) {}
+    } catch (e, stack) {
+      debugPrint('Supabase error: $e');
+      debugPrint('Stack: $stack');
+    }
   }
 
 
