@@ -135,11 +135,11 @@ class _TasksPageState extends ConsumerState<TasksPage> {
                   }
 
                   return ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(24, 8, 24, 100),
                     itemCount: filtered.length,
-                    itemBuilder: (context, index) =>
-                        _TaskCard(task: filtered[index]),
-                  );
+                    itemBuilder: (context, index) => _TaskCard(task: filtered[index]),
+                );
                 },
               ),
             ),
