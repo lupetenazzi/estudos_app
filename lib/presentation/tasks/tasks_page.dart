@@ -257,9 +257,10 @@ class _TasksPageState extends ConsumerState<TasksPage> {
                   );
 
                   await ref.read(createTaskProvider).call(task);
-                  ref.invalidate(tasksProvider);
 
                   if (context.mounted) Navigator.pop(context);
+
+                  ref.refresh(tasksProvider);
                 },
                 child: const Text('Criar tarefa'),
               ),
