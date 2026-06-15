@@ -5,7 +5,7 @@ part of 'app_database.dart';
 // ignore_for_file: type=lint
 mixin _$TaskDaoMixin on DatabaseAccessor<AppDatabase> {
   $AxesTable get axes => attachedDatabase.axes;
-  $TasksTable get tasks => attachedDatabase.tasks;
+  $TasksTableTable get tasksTable => attachedDatabase.tasksTable;
   TaskDaoManager get managers => TaskDaoManager(this);
 }
 
@@ -14,8 +14,8 @@ class TaskDaoManager {
   TaskDaoManager(this._db);
   $$AxesTableTableManager get axes =>
       $$AxesTableTableManager(_db.attachedDatabase, _db.axes);
-  $$TasksTableTableManager get tasks =>
-      $$TasksTableTableManager(_db.attachedDatabase, _db.tasks);
+  $$TasksTableTableTableManager get tasksTable =>
+      $$TasksTableTableTableManager(_db.attachedDatabase, _db.tasksTable);
 }
 
 class $AxesTable extends Axes with TableInfo<$AxesTable, Axe> {
@@ -202,11 +202,12 @@ class AxesCompanion extends UpdateCompanion<Axe> {
   }
 }
 
-class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
+class $TasksTableTable extends TasksTable
+    with TableInfo<$TasksTableTable, TasksTableData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TasksTable(this.attachedDatabase, [this._alias]);
+  $TasksTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -317,10 +318,10 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'tasks';
+  static const String $name = 'tasks_table';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Task> instance, {
+    Insertable<TasksTableData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -386,9 +387,9 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Task map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TasksTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Task(
+    return TasksTableData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -425,12 +426,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   }
 
   @override
-  $TasksTable createAlias(String alias) {
-    return $TasksTable(attachedDatabase, alias);
+  $TasksTableTable createAlias(String alias) {
+    return $TasksTableTable(attachedDatabase, alias);
   }
 }
 
-class Task extends DataClass implements Insertable<Task> {
+class TasksTableData extends DataClass implements Insertable<TasksTableData> {
   final int id;
   final String title;
   final String? description;
@@ -439,7 +440,7 @@ class Task extends DataClass implements Insertable<Task> {
   final bool isCompleted;
   final int priority;
   final int axisId;
-  const Task({
+  const TasksTableData({
     required this.id,
     required this.title,
     this.description,
@@ -467,8 +468,8 @@ class Task extends DataClass implements Insertable<Task> {
     return map;
   }
 
-  TasksCompanion toCompanion(bool nullToAbsent) {
-    return TasksCompanion(
+  TasksTableCompanion toCompanion(bool nullToAbsent) {
+    return TasksTableCompanion(
       id: Value(id),
       title: Value(title),
       description: description == null && nullToAbsent
@@ -484,12 +485,12 @@ class Task extends DataClass implements Insertable<Task> {
     );
   }
 
-  factory Task.fromJson(
+  factory TasksTableData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Task(
+    return TasksTableData(
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       description: serializer.fromJson<String?>(json['description']),
@@ -515,7 +516,7 @@ class Task extends DataClass implements Insertable<Task> {
     };
   }
 
-  Task copyWith({
+  TasksTableData copyWith({
     int? id,
     String? title,
     Value<String?> description = const Value.absent(),
@@ -524,7 +525,7 @@ class Task extends DataClass implements Insertable<Task> {
     bool? isCompleted,
     int? priority,
     int? axisId,
-  }) => Task(
+  }) => TasksTableData(
     id: id ?? this.id,
     title: title ?? this.title,
     description: description.present ? description.value : this.description,
@@ -534,8 +535,8 @@ class Task extends DataClass implements Insertable<Task> {
     priority: priority ?? this.priority,
     axisId: axisId ?? this.axisId,
   );
-  Task copyWithCompanion(TasksCompanion data) {
-    return Task(
+  TasksTableData copyWithCompanion(TasksTableCompanion data) {
+    return TasksTableData(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       description: data.description.present
@@ -553,7 +554,7 @@ class Task extends DataClass implements Insertable<Task> {
 
   @override
   String toString() {
-    return (StringBuffer('Task(')
+    return (StringBuffer('TasksTableData(')
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
@@ -580,7 +581,7 @@ class Task extends DataClass implements Insertable<Task> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Task &&
+      (other is TasksTableData &&
           other.id == this.id &&
           other.title == this.title &&
           other.description == this.description &&
@@ -591,7 +592,7 @@ class Task extends DataClass implements Insertable<Task> {
           other.axisId == this.axisId);
 }
 
-class TasksCompanion extends UpdateCompanion<Task> {
+class TasksTableCompanion extends UpdateCompanion<TasksTableData> {
   final Value<int> id;
   final Value<String> title;
   final Value<String?> description;
@@ -600,7 +601,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<bool> isCompleted;
   final Value<int> priority;
   final Value<int> axisId;
-  const TasksCompanion({
+  const TasksTableCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
@@ -610,7 +611,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     this.priority = const Value.absent(),
     this.axisId = const Value.absent(),
   });
-  TasksCompanion.insert({
+  TasksTableCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     this.description = const Value.absent(),
@@ -621,7 +622,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     required int axisId,
   }) : title = Value(title),
        axisId = Value(axisId);
-  static Insertable<Task> custom({
+  static Insertable<TasksTableData> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? description,
@@ -643,7 +644,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     });
   }
 
-  TasksCompanion copyWith({
+  TasksTableCompanion copyWith({
     Value<int>? id,
     Value<String>? title,
     Value<String?>? description,
@@ -653,7 +654,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Value<int>? priority,
     Value<int>? axisId,
   }) {
-    return TasksCompanion(
+    return TasksTableCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -697,7 +698,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
 
   @override
   String toString() {
-    return (StringBuffer('TasksCompanion(')
+    return (StringBuffer('TasksTableCompanion(')
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
@@ -715,13 +716,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AxesTable axes = $AxesTable(this);
-  late final $TasksTable tasks = $TasksTable(this);
+  late final $TasksTableTable tasksTable = $TasksTableTable(this);
   late final TaskDao taskDao = TaskDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [axes, tasks];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [axes, tasksTable];
 }
 
 typedef $$AxesTableCreateCompanionBuilder =
@@ -733,20 +734,19 @@ final class $$AxesTableReferences
     extends BaseReferences<_$AppDatabase, $AxesTable, Axe> {
   $$AxesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$TasksTable, List<Task>> _tasksRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.tasks,
-    aliasName: 'axes__id__tasks__axis_id',
+  static MultiTypedResultKey<$TasksTableTable, List<TasksTableData>>
+  _tasksTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.tasksTable,
+    aliasName: 'axes__id__tasks_table__axis_id',
   );
 
-  $$TasksTableProcessedTableManager get tasksRefs {
-    final manager = $$TasksTableTableManager(
+  $$TasksTableTableProcessedTableManager get tasksTableRefs {
+    final manager = $$TasksTableTableTableManager(
       $_db,
-      $_db.tasks,
+      $_db.tasksTable,
     ).filter((f) => f.axisId.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_tasksRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_tasksTableRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -771,22 +771,22 @@ class $$AxesTableFilterComposer extends Composer<_$AppDatabase, $AxesTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> tasksRefs(
-    Expression<bool> Function($$TasksTableFilterComposer f) f,
+  Expression<bool> tasksTableRefs(
+    Expression<bool> Function($$TasksTableTableFilterComposer f) f,
   ) {
-    final $$TasksTableFilterComposer composer = $composerBuilder(
+    final $$TasksTableTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.tasks,
+      referencedTable: $db.tasksTable,
       getReferencedColumn: (t) => t.axisId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TasksTableFilterComposer(
+          }) => $$TasksTableTableFilterComposer(
             $db: $db,
-            $table: $db.tasks,
+            $table: $db.tasksTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -831,22 +831,22 @@ class $$AxesTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  Expression<T> tasksRefs<T extends Object>(
-    Expression<T> Function($$TasksTableAnnotationComposer a) f,
+  Expression<T> tasksTableRefs<T extends Object>(
+    Expression<T> Function($$TasksTableTableAnnotationComposer a) f,
   ) {
-    final $$TasksTableAnnotationComposer composer = $composerBuilder(
+    final $$TasksTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.tasks,
+      referencedTable: $db.tasksTable,
       getReferencedColumn: (t) => t.axisId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TasksTableAnnotationComposer(
+          }) => $$TasksTableTableAnnotationComposer(
             $db: $db,
-            $table: $db.tasks,
+            $table: $db.tasksTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -870,7 +870,7 @@ class $$AxesTableTableManager
           $$AxesTableUpdateCompanionBuilder,
           (Axe, $$AxesTableReferences),
           Axe,
-          PrefetchHooks Function({bool tasksRefs})
+          PrefetchHooks Function({bool tasksTableRefs})
         > {
   $$AxesTableTableManager(_$AppDatabase db, $AxesTable table)
     : super(
@@ -897,21 +897,20 @@ class $$AxesTableTableManager
                     (e.readTable(table), $$AxesTableReferences(db, table, e)),
               )
               .toList(),
-          prefetchHooksCallback: ({tasksRefs = false}) {
+          prefetchHooksCallback: ({tasksTableRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (tasksRefs) db.tasks],
+              explicitlyWatchedTables: [if (tasksTableRefs) db.tasksTable],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (tasksRefs)
-                    await $_getPrefetchedData<Axe, $AxesTable, Task>(
+                  if (tasksTableRefs)
+                    await $_getPrefetchedData<Axe, $AxesTable, TasksTableData>(
                       currentTable: table,
-                      referencedTable: $$AxesTableReferences._tasksRefsTable(
-                        db,
-                      ),
+                      referencedTable: $$AxesTableReferences
+                          ._tasksTableRefsTable(db),
                       managerFromTypedResult: (p0) =>
-                          $$AxesTableReferences(db, table, p0).tasksRefs,
+                          $$AxesTableReferences(db, table, p0).tasksTableRefs,
                       referencedItemsForCurrentItem: (item, referencedItems) =>
                           referencedItems.where((e) => e.axisId == item.id),
                       typedResults: items,
@@ -936,10 +935,10 @@ typedef $$AxesTableProcessedTableManager =
       $$AxesTableUpdateCompanionBuilder,
       (Axe, $$AxesTableReferences),
       Axe,
-      PrefetchHooks Function({bool tasksRefs})
+      PrefetchHooks Function({bool tasksTableRefs})
     >;
-typedef $$TasksTableCreateCompanionBuilder =
-    TasksCompanion Function({
+typedef $$TasksTableTableCreateCompanionBuilder =
+    TasksTableCompanion Function({
       Value<int> id,
       required String title,
       Value<String?> description,
@@ -949,8 +948,8 @@ typedef $$TasksTableCreateCompanionBuilder =
       Value<int> priority,
       required int axisId,
     });
-typedef $$TasksTableUpdateCompanionBuilder =
-    TasksCompanion Function({
+typedef $$TasksTableTableUpdateCompanionBuilder =
+    TasksTableCompanion Function({
       Value<int> id,
       Value<String> title,
       Value<String?> description,
@@ -961,12 +960,12 @@ typedef $$TasksTableUpdateCompanionBuilder =
       Value<int> axisId,
     });
 
-final class $$TasksTableReferences
-    extends BaseReferences<_$AppDatabase, $TasksTable, Task> {
-  $$TasksTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$TasksTableTableReferences
+    extends BaseReferences<_$AppDatabase, $TasksTableTable, TasksTableData> {
+  $$TasksTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $AxesTable _axisIdTable(_$AppDatabase db) =>
-      db.axes.createAlias('tasks__axis_id__axes__id');
+      db.axes.createAlias('tasks_table__axis_id__axes__id');
 
   $$AxesTableProcessedTableManager get axisId {
     final $_column = $_itemColumn<int>('axis_id')!;
@@ -983,8 +982,9 @@ final class $$TasksTableReferences
   }
 }
 
-class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
-  $$TasksTableFilterComposer({
+class $$TasksTableTableFilterComposer
+    extends Composer<_$AppDatabase, $TasksTableTable> {
+  $$TasksTableTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1050,9 +1050,9 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
   }
 }
 
-class $$TasksTableOrderingComposer
-    extends Composer<_$AppDatabase, $TasksTable> {
-  $$TasksTableOrderingComposer({
+class $$TasksTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $TasksTableTable> {
+  $$TasksTableTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1118,9 +1118,9 @@ class $$TasksTableOrderingComposer
   }
 }
 
-class $$TasksTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TasksTable> {
-  $$TasksTableAnnotationComposer({
+class $$TasksTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TasksTableTable> {
+  $$TasksTableTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1176,32 +1176,32 @@ class $$TasksTableAnnotationComposer
   }
 }
 
-class $$TasksTableTableManager
+class $$TasksTableTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $TasksTable,
-          Task,
-          $$TasksTableFilterComposer,
-          $$TasksTableOrderingComposer,
-          $$TasksTableAnnotationComposer,
-          $$TasksTableCreateCompanionBuilder,
-          $$TasksTableUpdateCompanionBuilder,
-          (Task, $$TasksTableReferences),
-          Task,
+          $TasksTableTable,
+          TasksTableData,
+          $$TasksTableTableFilterComposer,
+          $$TasksTableTableOrderingComposer,
+          $$TasksTableTableAnnotationComposer,
+          $$TasksTableTableCreateCompanionBuilder,
+          $$TasksTableTableUpdateCompanionBuilder,
+          (TasksTableData, $$TasksTableTableReferences),
+          TasksTableData,
           PrefetchHooks Function({bool axisId})
         > {
-  $$TasksTableTableManager(_$AppDatabase db, $TasksTable table)
+  $$TasksTableTableTableManager(_$AppDatabase db, $TasksTableTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$TasksTableFilterComposer($db: db, $table: table),
+              $$TasksTableTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$TasksTableOrderingComposer($db: db, $table: table),
+              $$TasksTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$TasksTableAnnotationComposer($db: db, $table: table),
+              $$TasksTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -1212,7 +1212,7 @@ class $$TasksTableTableManager
                 Value<bool> isCompleted = const Value.absent(),
                 Value<int> priority = const Value.absent(),
                 Value<int> axisId = const Value.absent(),
-              }) => TasksCompanion(
+              }) => TasksTableCompanion(
                 id: id,
                 title: title,
                 description: description,
@@ -1232,7 +1232,7 @@ class $$TasksTableTableManager
                 Value<bool> isCompleted = const Value.absent(),
                 Value<int> priority = const Value.absent(),
                 required int axisId,
-              }) => TasksCompanion.insert(
+              }) => TasksTableCompanion.insert(
                 id: id,
                 title: title,
                 description: description,
@@ -1244,8 +1244,10 @@ class $$TasksTableTableManager
               ),
           withReferenceMapper: (p0) => p0
               .map(
-                (e) =>
-                    (e.readTable(table), $$TasksTableReferences(db, table, e)),
+                (e) => (
+                  e.readTable(table),
+                  $$TasksTableTableReferences(db, table, e),
+                ),
               )
               .toList(),
           prefetchHooksCallback: ({axisId = false}) {
@@ -1273,9 +1275,9 @@ class $$TasksTableTableManager
                           state.withJoin(
                                 currentTable: table,
                                 currentColumn: table.axisId,
-                                referencedTable: $$TasksTableReferences
+                                referencedTable: $$TasksTableTableReferences
                                     ._axisIdTable(db),
-                                referencedColumn: $$TasksTableReferences
+                                referencedColumn: $$TasksTableTableReferences
                                     ._axisIdTable(db)
                                     .id,
                               )
@@ -1293,18 +1295,18 @@ class $$TasksTableTableManager
       );
 }
 
-typedef $$TasksTableProcessedTableManager =
+typedef $$TasksTableTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $TasksTable,
-      Task,
-      $$TasksTableFilterComposer,
-      $$TasksTableOrderingComposer,
-      $$TasksTableAnnotationComposer,
-      $$TasksTableCreateCompanionBuilder,
-      $$TasksTableUpdateCompanionBuilder,
-      (Task, $$TasksTableReferences),
-      Task,
+      $TasksTableTable,
+      TasksTableData,
+      $$TasksTableTableFilterComposer,
+      $$TasksTableTableOrderingComposer,
+      $$TasksTableTableAnnotationComposer,
+      $$TasksTableTableCreateCompanionBuilder,
+      $$TasksTableTableUpdateCompanionBuilder,
+      (TasksTableData, $$TasksTableTableReferences),
+      TasksTableData,
       PrefetchHooks Function({bool axisId})
     >;
 
@@ -1312,6 +1314,6 @@ class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$AxesTableTableManager get axes => $$AxesTableTableManager(_db, _db.axes);
-  $$TasksTableTableManager get tasks =>
-      $$TasksTableTableManager(_db, _db.tasks);
+  $$TasksTableTableTableManager get tasksTable =>
+      $$TasksTableTableTableManager(_db, _db.tasksTable);
 }

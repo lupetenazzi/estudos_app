@@ -10,7 +10,7 @@ class Axes extends Table {
   TextColumn get name => text()();
 }
 
-class Tasks extends Table {
+class TasksTable extends Table {
 
   IntColumn get id => integer().autoIncrement()();
 
@@ -30,26 +30,26 @@ class Tasks extends Table {
   
 }
 
-@DriftAccessor(tables: [Tasks, Axes])
+@DriftAccessor(tables: [TasksTable, Axes])
 class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
   TaskDao(super.db);
 
-  Future<List<TaskData>> getAllTasks() => select(tasks).get();
+  Future<List<TasksTableData>> getAllTasks() => select(tasksTable).get();
 
-  Future<List<TaskData>> getPendingTasks() =>
-      (select(tasks)..where((t) => t.isCompleted.equals(false))).get();
+  Future<List<TasksTableData>> getPendingTasks() =>
+    (select(tasksTable)..where((t) => t.isCompleted.equals(false))).get();
 
-  Future<int> insertTask(TasksCompanion task) => into(tasks).insert(task);
+  Future<int> insertTask(TasksTableCompanion task) => into(tasksTable).insert(task);
 
   Future<void> completeTask(int id) =>
-      (update(tasks)..where((t) => t.id.equals(id)))
-          .write(const TasksCompanion(isCompleted: Value(true)));
+    (update(tasksTable)..where((t) => t.id.equals(id)))
+        .write(const TasksTableCompanion(isCompleted: Value(true)));
 
   Future<void> deleteTask(int id) =>
-      (delete(tasks)..where((t) => t.id.equals(id))).go();
+    (delete(tasksTable)..where((t) => t.id.equals(id))).go();
 }
 
-@DriftDatabase(tables: [Axes, Tasks], daos: [TaskDao])
+@DriftDatabase(tables: [Axes, TasksTable], daos: [TaskDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

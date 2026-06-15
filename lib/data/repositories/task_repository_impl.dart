@@ -1,6 +1,6 @@
 import "package:estudos_app/data/local/app_database.dart";
 import "../../data/models/task_model.dart";
-import "../../domain/entities/task.dart";
+import 'package:estudos_app/domain/entities/task.dart' as domain;
 import "../../domain/repositories/i_task_repository.dart";  
 
 class TaskRepositoryImpl implements ITaskRepository {
@@ -10,19 +10,19 @@ class TaskRepositoryImpl implements ITaskRepository {
   TaskRepositoryImpl(this._taskDao);
 
   @override
-  Future<List<Task>> getTasks() async {
+  Future<List<domain.Task>> getTasks() async {
     final taskDataList = await _taskDao.getAllTasks();
     return taskDataList.map((data) => TaskModel.fromData(data)).toList();
   }
 
   @override
-  Future<List<Task>> getPendingTasks() async {
+  Future<List<domain.Task>> getPendingTasks() async {
     final taskDataList = await _taskDao.getPendingTasks();
     return taskDataList.map((data) => TaskModel.fromData(data)).toList();
   }
 
   @override
-  Future<void> createTask(Task task) async {
+  Future<void> createTask(domain.Task task) async {
     final companion = TaskModel.toCompanion(task);
     await _taskDao.insertTask(companion);
   }
