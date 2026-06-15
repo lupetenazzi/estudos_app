@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:estudos_app/presentation/tasks/tasks_page.dart';
+import 'package:estudos_app/presentation/timer/focus_timer_page.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
