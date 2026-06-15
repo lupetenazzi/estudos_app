@@ -30,7 +30,20 @@ class TasksTable extends Table {
   
 }
 
-@DriftAccessor(tables: [TasksTable, Axes])
+class FocusSession extends Table {
+
+  IntColumn get id => integer().autoIncrement()();
+
+  DateTimeColumn get startedAt => dateTime()();
+
+  IntColumn get durationMinutes => integer()();
+
+  BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
+
+  TextColumn get mode => text()();
+}
+
+@DriftAccessor(tables: [TasksTable, Axes, FocusSession])
 class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
   TaskDao(super.db);
 
@@ -57,13 +70,22 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
 
 }
 
-@DriftDatabase(tables: [Axes, TasksTable], daos: [TaskDao])
+@DriftDatabase(tables: [Axes, TasksTable, FocusSession], daos: [TaskDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 }
+
+@override
+MigrationStrategy get migration => MigrationStrategy(
+  onUpgrade: (m, from, to) async {
+    if (from < 2) {
+      await m.createTable(focusSession);
+    }
+  },
+);
 
 QueryExecutor _openConnection() {
   return driftDatabase(name: 'estudos_app_db');

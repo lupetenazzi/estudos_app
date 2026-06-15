@@ -6,6 +6,7 @@ part of 'app_database.dart';
 mixin _$TaskDaoMixin on DatabaseAccessor<AppDatabase> {
   $AxesTable get axes => attachedDatabase.axes;
   $TasksTableTable get tasksTable => attachedDatabase.tasksTable;
+  $FocusSessionTable get focusSession => attachedDatabase.focusSession;
   TaskDaoManager get managers => TaskDaoManager(this);
 }
 
@@ -16,6 +17,8 @@ class TaskDaoManager {
       $$AxesTableTableManager(_db.attachedDatabase, _db.axes);
   $$TasksTableTableTableManager get tasksTable =>
       $$TasksTableTableTableManager(_db.attachedDatabase, _db.tasksTable);
+  $$FocusSessionTableTableManager get focusSession =>
+      $$FocusSessionTableTableManager(_db.attachedDatabase, _db.focusSession);
 }
 
 class $AxesTable extends Axes with TableInfo<$AxesTable, Axe> {
@@ -712,17 +715,385 @@ class TasksTableCompanion extends UpdateCompanion<TasksTableData> {
   }
 }
 
+class $FocusSessionTable extends FocusSession
+    with TableInfo<$FocusSessionTable, FocusSessionData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FocusSessionTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationMinutesMeta = const VerificationMeta(
+    'durationMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> durationMinutes = GeneratedColumn<int>(
+    'duration_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isCompletedMeta = const VerificationMeta(
+    'isCompleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isCompleted = GeneratedColumn<bool>(
+    'is_completed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_completed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _modeMeta = const VerificationMeta('mode');
+  @override
+  late final GeneratedColumn<String> mode = GeneratedColumn<String>(
+    'mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    startedAt,
+    durationMinutes,
+    isCompleted,
+    mode,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'focus_session';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FocusSessionData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtMeta);
+    }
+    if (data.containsKey('duration_minutes')) {
+      context.handle(
+        _durationMinutesMeta,
+        durationMinutes.isAcceptableOrUnknown(
+          data['duration_minutes']!,
+          _durationMinutesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationMinutesMeta);
+    }
+    if (data.containsKey('is_completed')) {
+      context.handle(
+        _isCompletedMeta,
+        isCompleted.isAcceptableOrUnknown(
+          data['is_completed']!,
+          _isCompletedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('mode')) {
+      context.handle(
+        _modeMeta,
+        mode.isAcceptableOrUnknown(data['mode']!, _modeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FocusSessionData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FocusSessionData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      )!,
+      durationMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_minutes'],
+      )!,
+      isCompleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_completed'],
+      )!,
+      mode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mode'],
+      )!,
+    );
+  }
+
+  @override
+  $FocusSessionTable createAlias(String alias) {
+    return $FocusSessionTable(attachedDatabase, alias);
+  }
+}
+
+class FocusSessionData extends DataClass
+    implements Insertable<FocusSessionData> {
+  final int id;
+  final DateTime startedAt;
+  final int durationMinutes;
+  final bool isCompleted;
+  final String mode;
+  const FocusSessionData({
+    required this.id,
+    required this.startedAt,
+    required this.durationMinutes,
+    required this.isCompleted,
+    required this.mode,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['started_at'] = Variable<DateTime>(startedAt);
+    map['duration_minutes'] = Variable<int>(durationMinutes);
+    map['is_completed'] = Variable<bool>(isCompleted);
+    map['mode'] = Variable<String>(mode);
+    return map;
+  }
+
+  FocusSessionCompanion toCompanion(bool nullToAbsent) {
+    return FocusSessionCompanion(
+      id: Value(id),
+      startedAt: Value(startedAt),
+      durationMinutes: Value(durationMinutes),
+      isCompleted: Value(isCompleted),
+      mode: Value(mode),
+    );
+  }
+
+  factory FocusSessionData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FocusSessionData(
+      id: serializer.fromJson<int>(json['id']),
+      startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      durationMinutes: serializer.fromJson<int>(json['durationMinutes']),
+      isCompleted: serializer.fromJson<bool>(json['isCompleted']),
+      mode: serializer.fromJson<String>(json['mode']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'startedAt': serializer.toJson<DateTime>(startedAt),
+      'durationMinutes': serializer.toJson<int>(durationMinutes),
+      'isCompleted': serializer.toJson<bool>(isCompleted),
+      'mode': serializer.toJson<String>(mode),
+    };
+  }
+
+  FocusSessionData copyWith({
+    int? id,
+    DateTime? startedAt,
+    int? durationMinutes,
+    bool? isCompleted,
+    String? mode,
+  }) => FocusSessionData(
+    id: id ?? this.id,
+    startedAt: startedAt ?? this.startedAt,
+    durationMinutes: durationMinutes ?? this.durationMinutes,
+    isCompleted: isCompleted ?? this.isCompleted,
+    mode: mode ?? this.mode,
+  );
+  FocusSessionData copyWithCompanion(FocusSessionCompanion data) {
+    return FocusSessionData(
+      id: data.id.present ? data.id.value : this.id,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      durationMinutes: data.durationMinutes.present
+          ? data.durationMinutes.value
+          : this.durationMinutes,
+      isCompleted: data.isCompleted.present
+          ? data.isCompleted.value
+          : this.isCompleted,
+      mode: data.mode.present ? data.mode.value : this.mode,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FocusSessionData(')
+          ..write('id: $id, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('durationMinutes: $durationMinutes, ')
+          ..write('isCompleted: $isCompleted, ')
+          ..write('mode: $mode')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, startedAt, durationMinutes, isCompleted, mode);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FocusSessionData &&
+          other.id == this.id &&
+          other.startedAt == this.startedAt &&
+          other.durationMinutes == this.durationMinutes &&
+          other.isCompleted == this.isCompleted &&
+          other.mode == this.mode);
+}
+
+class FocusSessionCompanion extends UpdateCompanion<FocusSessionData> {
+  final Value<int> id;
+  final Value<DateTime> startedAt;
+  final Value<int> durationMinutes;
+  final Value<bool> isCompleted;
+  final Value<String> mode;
+  const FocusSessionCompanion({
+    this.id = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.durationMinutes = const Value.absent(),
+    this.isCompleted = const Value.absent(),
+    this.mode = const Value.absent(),
+  });
+  FocusSessionCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime startedAt,
+    required int durationMinutes,
+    this.isCompleted = const Value.absent(),
+    required String mode,
+  }) : startedAt = Value(startedAt),
+       durationMinutes = Value(durationMinutes),
+       mode = Value(mode);
+  static Insertable<FocusSessionData> custom({
+    Expression<int>? id,
+    Expression<DateTime>? startedAt,
+    Expression<int>? durationMinutes,
+    Expression<bool>? isCompleted,
+    Expression<String>? mode,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (startedAt != null) 'started_at': startedAt,
+      if (durationMinutes != null) 'duration_minutes': durationMinutes,
+      if (isCompleted != null) 'is_completed': isCompleted,
+      if (mode != null) 'mode': mode,
+    });
+  }
+
+  FocusSessionCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? startedAt,
+    Value<int>? durationMinutes,
+    Value<bool>? isCompleted,
+    Value<String>? mode,
+  }) {
+    return FocusSessionCompanion(
+      id: id ?? this.id,
+      startedAt: startedAt ?? this.startedAt,
+      durationMinutes: durationMinutes ?? this.durationMinutes,
+      isCompleted: isCompleted ?? this.isCompleted,
+      mode: mode ?? this.mode,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (durationMinutes.present) {
+      map['duration_minutes'] = Variable<int>(durationMinutes.value);
+    }
+    if (isCompleted.present) {
+      map['is_completed'] = Variable<bool>(isCompleted.value);
+    }
+    if (mode.present) {
+      map['mode'] = Variable<String>(mode.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FocusSessionCompanion(')
+          ..write('id: $id, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('durationMinutes: $durationMinutes, ')
+          ..write('isCompleted: $isCompleted, ')
+          ..write('mode: $mode')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AxesTable axes = $AxesTable(this);
   late final $TasksTableTable tasksTable = $TasksTableTable(this);
+  late final $FocusSessionTable focusSession = $FocusSessionTable(this);
   late final TaskDao taskDao = TaskDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [axes, tasksTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    axes,
+    tasksTable,
+    focusSession,
+  ];
 }
 
 typedef $$AxesTableCreateCompanionBuilder =
@@ -1309,6 +1680,204 @@ typedef $$TasksTableTableProcessedTableManager =
       TasksTableData,
       PrefetchHooks Function({bool axisId})
     >;
+typedef $$FocusSessionTableCreateCompanionBuilder =
+    FocusSessionCompanion Function({
+      Value<int> id,
+      required DateTime startedAt,
+      required int durationMinutes,
+      Value<bool> isCompleted,
+      required String mode,
+    });
+typedef $$FocusSessionTableUpdateCompanionBuilder =
+    FocusSessionCompanion Function({
+      Value<int> id,
+      Value<DateTime> startedAt,
+      Value<int> durationMinutes,
+      Value<bool> isCompleted,
+      Value<String> mode,
+    });
+
+class $$FocusSessionTableFilterComposer
+    extends Composer<_$AppDatabase, $FocusSessionTable> {
+  $$FocusSessionTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCompleted => $composableBuilder(
+    column: $table.isCompleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mode => $composableBuilder(
+    column: $table.mode,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FocusSessionTableOrderingComposer
+    extends Composer<_$AppDatabase, $FocusSessionTable> {
+  $$FocusSessionTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCompleted => $composableBuilder(
+    column: $table.isCompleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mode => $composableBuilder(
+    column: $table.mode,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FocusSessionTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FocusSessionTable> {
+  $$FocusSessionTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get durationMinutes => $composableBuilder(
+    column: $table.durationMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isCompleted => $composableBuilder(
+    column: $table.isCompleted,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get mode =>
+      $composableBuilder(column: $table.mode, builder: (column) => column);
+}
+
+class $$FocusSessionTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FocusSessionTable,
+          FocusSessionData,
+          $$FocusSessionTableFilterComposer,
+          $$FocusSessionTableOrderingComposer,
+          $$FocusSessionTableAnnotationComposer,
+          $$FocusSessionTableCreateCompanionBuilder,
+          $$FocusSessionTableUpdateCompanionBuilder,
+          (
+            FocusSessionData,
+            BaseReferences<_$AppDatabase, $FocusSessionTable, FocusSessionData>,
+          ),
+          FocusSessionData,
+          PrefetchHooks Function()
+        > {
+  $$FocusSessionTableTableManager(_$AppDatabase db, $FocusSessionTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FocusSessionTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FocusSessionTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FocusSessionTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> startedAt = const Value.absent(),
+                Value<int> durationMinutes = const Value.absent(),
+                Value<bool> isCompleted = const Value.absent(),
+                Value<String> mode = const Value.absent(),
+              }) => FocusSessionCompanion(
+                id: id,
+                startedAt: startedAt,
+                durationMinutes: durationMinutes,
+                isCompleted: isCompleted,
+                mode: mode,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime startedAt,
+                required int durationMinutes,
+                Value<bool> isCompleted = const Value.absent(),
+                required String mode,
+              }) => FocusSessionCompanion.insert(
+                id: id,
+                startedAt: startedAt,
+                durationMinutes: durationMinutes,
+                isCompleted: isCompleted,
+                mode: mode,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FocusSessionTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FocusSessionTable,
+      FocusSessionData,
+      $$FocusSessionTableFilterComposer,
+      $$FocusSessionTableOrderingComposer,
+      $$FocusSessionTableAnnotationComposer,
+      $$FocusSessionTableCreateCompanionBuilder,
+      $$FocusSessionTableUpdateCompanionBuilder,
+      (
+        FocusSessionData,
+        BaseReferences<_$AppDatabase, $FocusSessionTable, FocusSessionData>,
+      ),
+      FocusSessionData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1316,4 +1885,6 @@ class $AppDatabaseManager {
   $$AxesTableTableManager get axes => $$AxesTableTableManager(_db, _db.axes);
   $$TasksTableTableTableManager get tasksTable =>
       $$TasksTableTableTableManager(_db, _db.tasksTable);
+  $$FocusSessionTableTableManager get focusSession =>
+      $$FocusSessionTableTableManager(_db, _db.focusSession);
 }
