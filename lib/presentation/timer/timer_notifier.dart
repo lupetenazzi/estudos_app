@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'timer_state.dart';
+import '../../services/notification_service.dart';
 
 class TimerNotifier extends Notifier<TimerState> {
   Timer? _timer;
@@ -24,7 +25,11 @@ class TimerNotifier extends Notifier<TimerState> {
         state = state.copyWith(remainingSeconds: state.remainingSeconds - 1);
       } else {
         timer.cancel();
-        state = state.copyWith(status: TimerStatus.finished);
+        state = state.copyWith(status: TimerStatus.finished, completedCycles: state.completedCycles + 1);
+        NotificationService.showNotification(
+          'Sessão concluída!',
+          'Seu Pomodoro terminou. Hora de descansar!',  
+        );
       }
     });
   }
@@ -45,14 +50,18 @@ class TimerNotifier extends Notifier<TimerState> {
         state = state.copyWith(remainingSeconds: state.remainingSeconds - 1);
       } else {
         timer.cancel();
-        state = state.copyWith(status: TimerStatus.finished);
+        state = state.copyWith(status: TimerStatus.finished, completedCycles: state.completedCycles + 1);
+        NotificationService.showNotification(
+          'Sessão concluída!',
+          'Seu Pomodoro terminou. Hora de descansar!',  
+        );
       }
     });
   }
 
   void cancelTimer() {
     _timer?.cancel();
-    state = state.copyWith(status: TimerStatus.idle, remainingSeconds: state.totalSeconds);
+    state = state.copyWith(status: TimerStatus.idle, remainingSeconds: state.totalSeconds, completedCycles: 0);
   }
 
 }

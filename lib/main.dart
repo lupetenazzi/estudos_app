@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:estudos_app/presentation/tasks/tasks_page.dart';
 import 'package:estudos_app/presentation/timer/focus_timer_page.dart';
+import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -21,6 +22,8 @@ Future<void> main() async {
     );
   }
 
+  await NotificationService.initialize();
+
   runApp(const ProviderScope(
       child: MyApp(),
     ),
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Estudos App',
       theme: AppTheme.lightTheme,      
-      home: const TasksPage(),
+      home: const FocusTimerPage(),
     );
   }
 }

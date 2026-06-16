@@ -33,7 +33,7 @@ class FocusTimerPage extends ConsumerWidget {
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.w800)),
                       Text(
-                        '0 ciclos hoje',
+                        '${timerState.completedCycles} ciclos hoje',
                         style: TextStyle(
                             fontSize: 12,
                             color: Theme.of(context).colorScheme.onSurfaceVariant),
