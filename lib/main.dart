@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:estudos_app/presentation/tasks/tasks_page.dart';
-import 'package:estudos_app/presentation/timer/focus_timer_page.dart';
 import 'package:estudos_app/presentation/auth/login_page.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
@@ -16,6 +15,9 @@ Future<void> main() async {
   );
 
   await NotificationService.initialize();
+
+  // Adicione temporariamente no main.dart antes do runApp:
+  await Supabase.instance.client.auth.signOut();
 
   runApp(const ProviderScope(
       child: MyApp(),
@@ -32,8 +34,8 @@ class MyApp extends StatelessWidget {
       title: 'Estudos App',
       theme: AppTheme.lightTheme,      
       home: Supabase.instance.client.auth.currentSession != null
-            ? const TasksPage()
-            : const LoginPage(),
-    );
+        ? const TasksPage()
+        : const LoginPage(),
+      );
   }
 }

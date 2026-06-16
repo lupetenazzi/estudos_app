@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:estudos_app/presentation/tasks/tasks_page.dart';
+import '../tasks/tasks_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
