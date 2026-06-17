@@ -16,9 +16,6 @@ Future<void> main() async {
 
   await NotificationService.initialize();
 
-  // Adicione temporariamente no main.dart antes do runApp:
-  await Supabase.instance.client.auth.signOut();
-
   runApp(const ProviderScope(
       child: MyApp(),
     ),
