@@ -21,9 +21,8 @@ class GoogleCalendarDatasource {
 
   Future<List<calendar.Event>> getEventsToday() async {
   try {
-
     final account = await _googleSignIn.signInSilently();
-    if (account == null) return []; 
+    if (account == null) return [];
 
     final auth = await account.authentication;
     final authHeaders = {
@@ -38,15 +37,29 @@ class GoogleCalendarDatasource {
     final startOfDay = DateTime(now.year, now.month, now.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    final events = await calendarApi.events.list(
-      'primary',
-      timeMin: startOfDay.toUtc(),
-      timeMax: endOfDay.toUtc(),
-      singleEvents: true,
-      orderBy: 'startTime',
-    );
+    final calendarList = await calendarApi.calendarList.list();
+    final allEvents = <calendar.Event>[];
 
-    return events.items ?? [];
+    for (final cal in calendarList.items ?? []) {
+      if (cal.id == null) continue;
+      final events = await calendarApi.events.list(
+        cal.id!,
+        timeMin: startOfDay.toUtc(),
+        timeMax: endOfDay.toUtc(),
+        singleEvents: true,
+        orderBy: 'startTime',
+      );
+      allEvents.addAll(events.items ?? []);
+    }
+
+    allEvents.sort((a, b) {
+      final aStart = a.start?.dateTime ?? a.start?.date;
+      final bStart = b.start?.dateTime ?? b.start?.date;
+      if (aStart == null || bStart == null) return 0;
+      return aStart.compareTo(bStart);
+    });
+
+    return allEvents;
   } catch (e) {
     return [];
   }

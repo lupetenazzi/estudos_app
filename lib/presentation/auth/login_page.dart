@@ -74,7 +74,24 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final account = await googleSignIn.signIn();
-      if (account == null) return;
+      if (account == null) {
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final googleAuth = await account.authentication;
+      final idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        setState(() => _errorMessage = 'Não foi possível obter o token do Google.');
+        return;
+      }
+
+      await Supabase.instance.client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: googleAuth.accessToken,
+      );
 
       if (mounted) {
         Navigator.pushReplacement(
@@ -82,7 +99,9 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (_) => const DashboardPage()),
         );
       }
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('Erro Google Sign In: $e');
+      debugPrint('Stack: $stack');
       setState(() => _errorMessage = 'Erro ao conectar com Google.');
     } finally {
       setState(() => _isLoading = false);
