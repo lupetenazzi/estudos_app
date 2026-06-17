@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../tasks/tasks_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:estudos_app/presentation/dashboard/dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -49,14 +50,40 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const TasksPage()),
+          MaterialPageRoute(builder: (_) => const DashboardPage()),
         );
       }
-
     } on AuthException catch (e) {
       setState(() => _errorMessage = e.message);
     } catch (e) {
       setState(() => _errorMessage = 'Erro inesperado. Tente novamente.');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final googleSignIn = GoogleSignIn(
+        scopes: ['email', 'https://www.googleapis.com/auth/calendar.readonly'],
+      );
+
+      final account = await googleSignIn.signIn();
+      if (account == null) return;
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DashboardPage()),
+        );
+      }
+    } catch (e) {
+      setState(() => _errorMessage = 'Erro ao conectar com Google.');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -246,6 +273,41 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               )
                             : Text(_isSignup ? 'Criar conta' : 'Entrar'),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Divider
+                    Row(
+                      children: [
+                        const Expanded(child: Divider()),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'ou continue com',
+                            style: TextStyle(
+                                fontSize: 12, color: Colors.grey.shade500),
+                          ),
+                        ),
+                        const Expanded(child: Divider()),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Botão Google
+                    SizedBox(
+                      height: 56,
+                      child: OutlinedButton.icon(
+                        onPressed: _isLoading ? null : _signInWithGoogle,
+                        icon: const Icon(Icons.g_mobiledata_rounded, size: 24),
+                        label: const Text('Entrar com Google'),
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
                       ),
                     ),
 

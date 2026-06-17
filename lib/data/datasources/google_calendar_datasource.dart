@@ -20,34 +20,40 @@ class GoogleCalendarDatasource {
   );
 
   Future<List<calendar.Event>> getEventsToday() async {
-    try {
-      final account = await _googleSignIn.signIn();
-      if (account == null) return [];
+  try {
 
-      final auth = await account.authentication;
-      final authHeaders = {
-        'Authorization': 'Bearer ${auth.accessToken}',
-        'X-Goog-AuthUser': '0',
-      };
+    final account = await _googleSignIn.signInSilently();
+    if (account == null) return []; 
 
-      final authClient = GoogleAuthClient(authHeaders);
-      final calendarApi = calendar.CalendarApi(authClient);
+    final auth = await account.authentication;
+    final authHeaders = {
+      'Authorization': 'Bearer ${auth.accessToken}',
+      'X-Goog-AuthUser': '0',
+    };
 
-      final now = DateTime.now();
-      final startOfDay = DateTime(now.year, now.month, now.day);
-      final endOfDay = startOfDay.add(const Duration(days: 1));
+    final authClient = GoogleAuthClient(authHeaders);
+    final calendarApi = calendar.CalendarApi(authClient);
 
-      final events = await calendarApi.events.list(
-        'primary',
-        timeMin: startOfDay.toUtc(),
-        timeMax: endOfDay.toUtc(),
-        singleEvents: true,
-        orderBy: 'startTime',
-      );
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
 
-      return events.items ?? [];
-    } catch (e) {
-      return [];
-    }
+    final events = await calendarApi.events.list(
+      'primary',
+      timeMin: startOfDay.toUtc(),
+      timeMax: endOfDay.toUtc(),
+      singleEvents: true,
+      orderBy: 'startTime',
+    );
+
+    return events.items ?? [];
+  } catch (e) {
+    return [];
   }
+}
+
+Future<bool> signIn() async {
+  final account = await _googleSignIn.signIn();
+  return account != null;
+}
 }
