@@ -70,7 +70,27 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
 
 }
 
-@DriftDatabase(tables: [Axes, TasksTable, FocusSession], daos: [TaskDao])
+@DriftAccessor(tables: [FocusSession])
+class FocusSessionDao extends DatabaseAccessor<AppDatabase> with _$FocusSessionDaoMixin {
+  FocusSessionDao(super.db);
+
+  Future<int> insertFocusSession(FocusSessionCompanion session) =>
+      into(focusSession).insert(session);
+
+  Future<List<FocusSessionData>> getTodaysSessions() {
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    return (select(focusSession)
+      ..where((s) =>
+        s.startedAt.isBiggerOrEqualValue(startOfDay) &
+        s.startedAt.isSmallerThanValue(endOfDay)))
+      .get();
+  }
+}
+
+@DriftDatabase(tables: [Axes, TasksTable, FocusSession], daos: [TaskDao, FocusSessionDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

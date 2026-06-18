@@ -21,6 +21,18 @@ class TaskDaoManager {
       $$FocusSessionTableTableManager(_db.attachedDatabase, _db.focusSession);
 }
 
+mixin _$FocusSessionDaoMixin on DatabaseAccessor<AppDatabase> {
+  $FocusSessionTable get focusSession => attachedDatabase.focusSession;
+  FocusSessionDaoManager get managers => FocusSessionDaoManager(this);
+}
+
+class FocusSessionDaoManager {
+  final _$FocusSessionDaoMixin _db;
+  FocusSessionDaoManager(this._db);
+  $$FocusSessionTableTableManager get focusSession =>
+      $$FocusSessionTableTableManager(_db.attachedDatabase, _db.focusSession);
+}
+
 class $AxesTable extends Axes with TableInfo<$AxesTable, Axe> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1085,6 +1097,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TasksTableTable tasksTable = $TasksTableTable(this);
   late final $FocusSessionTable focusSession = $FocusSessionTable(this);
   late final TaskDao taskDao = TaskDao(this as AppDatabase);
+  late final FocusSessionDao focusSessionDao = FocusSessionDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
