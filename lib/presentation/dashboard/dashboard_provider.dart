@@ -3,6 +3,8 @@ import '../../domain/usecases/get_today_events.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:estudos_app/domain/entities/task.dart' as domain;
 import '../../data/datasources/google_calendar_datasource.dart';
+import '../../data/repositories/focus_session_repository_impl.dart';
+import '../timer/timer_provider.dart';
 import '../tasks/tasks_provider.dart';
 
 final googleCalendarDatasourceProvider = Provider<GoogleCalendarDatasource>((ref) {
@@ -23,4 +25,12 @@ final todayTasksProvider = FutureProvider<List<domain.Task>>((ref) async {
     t.dueDate!.month == today.month &&
     t.dueDate!.day == today.day
   ).toList();
+});
+
+final todayFocusMinutesProvider = FutureProvider<int>((ref) async {
+  final repository = ref.watch(focusSessionRepositoryProvider);
+  final sessions = await repository.getTodaysSessions();
+  return sessions
+      .where((s) => s.isCompleted)
+      .fold<int>(0, (total, s) => total + s.durationMinutes);
 });

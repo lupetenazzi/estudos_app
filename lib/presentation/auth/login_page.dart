@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:estudos_app/presentation/dashboard/dashboard_page.dart';
+import 'package:estudos_app/presentation/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const DashboardPage()),
+          MaterialPageRoute(builder: (_) => const MainPage()),
         );
       }
     } on AuthException catch (e) {
@@ -96,14 +96,14 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const DashboardPage()),
+          MaterialPageRoute(builder: (_) => const MainPage()),
         );
       }
     } catch (e, stack) {
       debugPrint('Erro Google Sign In: $e');
       debugPrint('Stack: $stack');
       setState(() => _errorMessage = 'Erro ao conectar com Google.');
-    } finally {
+    } finally { 
       setState(() => _isLoading = false);
     }
   }

@@ -22,21 +22,26 @@ class DashboardPage extends ConsumerWidget {
   }
 
   void _shareResume(BuildContext context, WidgetRef ref) async {
-    final tasksAsync = ref.read(todayTasksProvider);
-    tasksAsync.whenData((tasks) {
-      final completed = tasks.where((t) => t.isCompleted).toList();
-      final text = StringBuffer();
-      text.writeln('📚 Resumo do dia — ${_formatDate()}');
-      text.writeln('');
-      text.writeln('✅ Tarefas concluídas: ${completed.length}/${tasks.length}');
-      if (completed.isNotEmpty) {
-        for (final task in completed) {
-          text.writeln('  • ${task.title}');
-        }
+  final tasksAsync = ref.read(todayTasksProvider);
+  final focusMinutes = await ref.read(todayFocusMinutesProvider.future);
+
+  tasksAsync.whenData((tasks) {
+    final completed = tasks.where((t) => t.isCompleted).toList();
+    final text = StringBuffer();
+    text.writeln('📚 Resumo do dia — ${_formatDate()}');
+    text.writeln('');
+    text.writeln('✅ Tarefas concluídas: ${completed.length}/${tasks.length}');
+    if (completed.isNotEmpty) {
+      for (final task in completed) {
+        text.writeln('  • ${task.title}');
       }
-      Share.share(text.toString());
-    });
-  }
+    }
+    text.writeln('');
+    text.writeln('⏱️ Minutos de foco: $focusMinutes min');
+    Share.share(text.toString());
+  });
+}
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

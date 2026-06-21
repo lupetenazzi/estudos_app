@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:estudos_app/presentation/tasks/tasks_page.dart';
-import 'package:estudos_app/presentation/dashboard/dashboard_page.dart';
 import 'package:estudos_app/presentation/auth/login_page.dart';
+import 'package:estudos_app/presentation/main_page.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
       title: 'Estudos App',
       theme: AppTheme.lightTheme,      
       home: Supabase.instance.client.auth.currentSession != null
-    ? const DashboardPage()
+    ? const MainPage()
     : const LoginPage(),
       );
   }
