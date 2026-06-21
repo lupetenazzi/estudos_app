@@ -150,126 +150,170 @@ class _TasksPageState extends ConsumerState<TasksPage> {
   }
 
   void _showCreateSheet(BuildContext context, WidgetRef ref) {
-    final titleController = TextEditingController();
-    int selectedPriority = 1;
+  final titleController = TextEditingController();
+  final descController = TextEditingController();
+  int selectedPriority = 1;
+  DateTime? selectedDate;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Nova Tarefa',
-                  style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w800)),
-              const SizedBox(height: 16),
-              TextField(
-                controller: titleController,
-                autofocus: true,
-                decoration: const InputDecoration(
-                    hintText: 'Título da tarefa'),
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    ),
+    builder: (context) => StatefulBuilder(
+      builder: (context, setState) => Padding(
+        padding: EdgeInsets.only(
+          left: 24,
+          right: 24,
+          top: 24,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text('Nova Tarefa',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 16),
+            TextField(
+              controller: titleController,
+              autofocus: true,
+              decoration: const InputDecoration(hintText: 'Título da tarefa'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: descController,
+              decoration: const InputDecoration(hintText: 'Descrição (opcional)'),
+              maxLines: 2,
+            ),
+            const SizedBox(height: 12),
+            // Prazo
+            GestureDetector(
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2100),
+                );
+                if (picked != null) setState(() => selectedDate = picked);
+              },
+              child: Container(
+                height: 44,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_today_outlined,
+                        size: 16, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Text(
+                      selectedDate != null
+                          ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
+                          : 'Prazo (opcional)',
+                      style: TextStyle(
+                          color: selectedDate != null
+                              ? Colors.black87
+                              : Colors.grey),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              // Seletor de prioridade
-              Row(
-                children: [
-                  {'label': 'Alta', 'value': 0},
-                  {'label': 'Média', 'value': 1},
-                  {'label': 'Baixa', 'value': 2},
-                ].map((p) {
-                  final selected = selectedPriority == p['value'];
-                  final colors = [
-                    Colors.red.shade400,
-                    Colors.amber.shade400,
-                    Colors.green.shade400
-                  ];
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: GestureDetector(
-                        onTap: () => setState(
-                            () => selectedPriority = p['value'] as int),
-                        child: Container(
-                          height: 36,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: selected
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.grey.shade300,
-                            ),
+            ),
+            const SizedBox(height: 12),
+            // Prioridade
+            Row(
+              children: [
+                {'label': 'Alta', 'value': 0},
+                {'label': 'Média', 'value': 1},
+                {'label': 'Baixa', 'value': 2},
+              ].map((p) {
+                final selected = selectedPriority == p['value'];
+                final colors = [
+                  Colors.red.shade400,
+                  Colors.amber.shade400,
+                  Colors.green.shade400,
+                ];
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      onTap: () => setState(
+                          () => selectedPriority = p['value'] as int),
+                      child: Container(
+                        height: 36,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
                             color: selected
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.08)
-                                : Colors.transparent,
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.grey.shade300,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircleAvatar(
-                                  radius: 4,
-                                  backgroundColor:
-                                      colors[p['value'] as int]),
-                              const SizedBox(width: 6),
-                              Text(p['label'] as String,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: selected
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : Colors.grey)),
-                            ],
-                          ),
+                          color: selected
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.08)
+                              : Colors.transparent,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                                radius: 4,
+                                backgroundColor: colors[p['value'] as int]),
+                            const SizedBox(width: 6),
+                            Text(p['label'] as String,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: selected
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Colors.grey)),
+                          ],
                         ),
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  if (titleController.text.isEmpty) return;
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                if (titleController.text.isEmpty) return;
 
-                  final task = domain.Task(
-                    id: 0,
-                    title: titleController.text,
-                    isCompleted: false,
-                    priority: selectedPriority,
-                    axisId: 1,
-                    createdAt: DateTime.now(),
-                  );
+                final task = domain.Task(
+                  id: 0,
+                  title: titleController.text,
+                  description: descController.text.isEmpty
+                      ? null
+                      : descController.text,
+                  dueDate: selectedDate,
+                  isCompleted: false,
+                  priority: selectedPriority,
+                  axisId: 1,
+                  createdAt: DateTime.now(),
+                );
 
-                  await ref.read(createTaskProvider).call(task);
+                await ref.read(createTaskProvider).call(task);
 
-                  if (context.mounted) Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
 
-                  ref.refresh(tasksProvider);
-                },
-                child: const Text('Criar tarefa'),
-              ),
-            ],
-          ),
+                ref.refresh(tasksProvider);
+              },
+              child: const Text('Criar tarefa'),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _TaskCard extends ConsumerWidget {

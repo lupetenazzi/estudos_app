@@ -216,14 +216,6 @@ class _TaskCard extends StatelessWidget {
                     color: task.isCompleted ? Colors.grey : null,
                   ),
                 ),
-                if (task.dueDate != null)
-                  Text(
-                    'Hoje, ${task.dueDate!.hour.toString().padLeft(2, '0')}:${task.dueDate!.minute.toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
               ],
             ),
           ),

@@ -39,11 +39,23 @@ class TaskRepositoryImpl implements ITaskRepository {
   @override
   Future<void> uncompleteTask(int id) async {
     await _taskDao.uncompleteTask(id);
+    try {
+      await _remoteDatasource.uncompleteTask(id);
+    } catch (e, stack) {
+      debugPrint('Supabase error: $e');
+      debugPrint('Stack: $stack');
+    }
   }
 
   @override
   Future<void> updateTask(domain.Task task) async {
     await _taskDao.updateTask(TaskModel.toCompanion(task), task.id);
+    try {
+      await _remoteDatasource.updateTask(task);
+    } catch (e, stack) {
+      debugPrint('Supabase error: $e');
+      debugPrint('Stack: $stack');
+    }
   }
 
   @override

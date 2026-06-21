@@ -18,13 +18,7 @@ final todayEventsProvider = FutureProvider<List<calendar.Event>>((ref) async {
 
 final todayTasksProvider = FutureProvider<List<domain.Task>>((ref) async {
   final tasks = await ref.watch(tasksProvider.future);
-  final today = DateTime.now();
-  return tasks.where((t) =>
-    t.dueDate != null &&
-    t.dueDate!.year == today.year &&
-    t.dueDate!.month == today.month &&
-    t.dueDate!.day == today.day
-  ).toList();
+  return tasks.where((t) => !t.isCompleted).toList();
 });
 
 final todayFocusMinutesProvider = FutureProvider<int>((ref) async {

@@ -34,4 +34,20 @@ class SupabaseTaskDatasource {
   Future<void> deleteTask(int id) async {
     await _client.from('tasks').delete().eq('id', id);
   }
+
+  Future<void> updateTask(domain.Task task) async {
+    await _client.from('tasks').update({
+      'title': task.title,
+      'description': task.description,
+      'due_date': task.dueDate?.toIso8601String(),
+      'priority': task.priority,
+    }).eq('id', task.id);
+  }
+
+  Future<void> uncompleteTask(int id) async {
+    await _client
+        .from('tasks')
+        .update({'is_completed': false})
+        .eq('id', id);
+  }
 }
