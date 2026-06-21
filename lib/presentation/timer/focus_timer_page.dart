@@ -24,21 +24,17 @@ class FocusTimerPage extends ConsumerWidget {
             // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Foco',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w800)),
-                      Text(
-                        '${timerState.completedCycles} ciclos hoje',
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant),
-                      ),
-                    ],
+                  const Text('Foco',
+                      style: TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w800)),
+                  Text(
+                    '${timerState.completedCycles} ciclos hoje',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -48,7 +44,6 @@ class FocusTimerPage extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-
                   // Timer circular
                   SizedBox(
                     width: 240,
@@ -57,7 +52,8 @@ class FocusTimerPage extends ConsumerWidget {
                       painter: _TimerPainter(
                         progress: progress,
                         color: Theme.of(context).colorScheme.primary,
-                        backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.surfaceVariant,
                       ),
                       child: Center(
                         child: Column(
@@ -73,13 +69,13 @@ class FocusTimerPage extends ConsumerWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              timerState.mode == TimerMode.pomodoro
-                                  ? 'Pomodoro'
-                                  : 'Livre',
+                              'Pomodoro',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -98,7 +94,7 @@ class FocusTimerPage extends ConsumerWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: i == 0
+                          color: i < timerState.completedCycles % 4
                               ? Theme.of(context).colorScheme.primary
                               : Theme.of(context).colorScheme.surfaceVariant,
                         ),
@@ -110,7 +106,6 @@ class FocusTimerPage extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Botão resetar
                       GestureDetector(
                         onTap: () => notifier.cancelTimer(),
                         child: Container(
@@ -124,8 +119,6 @@ class FocusTimerPage extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: 20),
-
-                      // Botão play/pause
                       GestureDetector(
                         onTap: () {
                           if (timerState.status == TimerStatus.running) {
@@ -166,20 +159,6 @@ class FocusTimerPage extends ConsumerWidget {
                       const SizedBox(width: 48),
                     ],
                   ),
-
-                  // Cards de estatísticas
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      children: [
-                        _StatCard(label: 'Hoje', value: '0m'),
-                        const SizedBox(width: 12),
-                        _StatCard(label: 'Semana', value: '0m'),
-                        const SizedBox(width: 12),
-                        _StatCard(label: 'Sequência', value: '0 dias'),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -190,41 +169,6 @@ class FocusTimerPage extends ConsumerWidget {
   }
 }
 
-// Card de estatística
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _StatCard({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Column(
-          children: [
-            Text(value,
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 4),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 11,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Painter do anel
 class _TimerPainter extends CustomPainter {
   final double progress;
   final Color color;
@@ -242,7 +186,6 @@ class _TimerPainter extends CustomPainter {
     final radius = size.width / 2 - 10;
     final rect = Rect.fromCircle(center: center, radius: radius);
 
-    // Anel de fundo
     final bgPaint = Paint()
       ..color = backgroundColor
       ..style = PaintingStyle.stroke
@@ -251,7 +194,6 @@ class _TimerPainter extends CustomPainter {
 
     canvas.drawArc(rect, 0, 2 * pi, false, bgPaint);
 
-    // Anel de progresso
     final progressPaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -262,6 +204,5 @@ class _TimerPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_TimerPainter old) =>
-      old.progress != progress;
+  bool shouldRepaint(_TimerPainter old) => old.progress != progress;
 }
