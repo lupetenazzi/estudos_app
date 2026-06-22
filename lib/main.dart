@@ -16,8 +16,6 @@ Future<void> main() async {
 
   await NotificationService.initialize();
 
-  await Supabase.instance.client.auth.signOut();
-
   runApp(const ProviderScope(
       child: MyApp(),
     ),
