@@ -1,12 +1,12 @@
 import 'package:googleapis/calendar/v3.dart' as calendar;
-import "../../data/datasources/google_calendar_datasource.dart";
+import '../repositories/i_calendar_repository.dart';
 
 class GetTodayEvents {
-  final GoogleCalendarDatasource datasource;
+  final ICalendarRepository repository;
 
-  GetTodayEvents(this.datasource);
+  GetTodayEvents(this.repository);
 
   Future<List<calendar.Event>> call() async {
-    return await datasource.getEventsToday();
+    return await repository.getEventsToday();
   }
 }

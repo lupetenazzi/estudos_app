@@ -1,6 +1,7 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:http/http.dart' as http;
+import 'package:estudos_app/domain/repositories/i_calendar_repository.dart';
 
 class GoogleAuthClient extends http.BaseClient {
   final Map<String, String> _headers;
@@ -14,11 +15,12 @@ class GoogleAuthClient extends http.BaseClient {
   }
 }
 
-class GoogleCalendarDatasource {
+class GoogleCalendarDatasource implements ICalendarRepository {
   final _googleSignIn = GoogleSignIn(
     scopes: [calendar.CalendarApi.calendarReadonlyScope],
   );
 
+  @override
   Future<List<calendar.Event>> getEventsToday() async {
   try {
     final account = await _googleSignIn.signInSilently();
@@ -66,7 +68,9 @@ class GoogleCalendarDatasource {
 }
 
 Future<bool> signIn() async {
-  final account = await _googleSignIn.signIn();
+  final account = await GoogleSignIn(
+    scopes: [calendar.CalendarApi.calendarReadonlyScope],
+  ).signIn();
   return account != null;
 }
 }

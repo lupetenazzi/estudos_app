@@ -33,6 +33,7 @@ class TaskRepositoryImpl implements ITaskRepository {
     } catch (e, stack) {
       debugPrint('Supabase error: $e');
       debugPrint('Stack: $stack');
+      rethrow;
     }
   }
 
@@ -44,6 +45,7 @@ class TaskRepositoryImpl implements ITaskRepository {
     } catch (e, stack) {
       debugPrint('Supabase error: $e');
       debugPrint('Stack: $stack');
+      rethrow;
     }
   }
 
@@ -55,6 +57,7 @@ class TaskRepositoryImpl implements ITaskRepository {
     } catch (e, stack) {
       debugPrint('Supabase error: $e');
       debugPrint('Stack: $stack');
+      rethrow;
     }
   }
 
@@ -66,6 +69,7 @@ class TaskRepositoryImpl implements ITaskRepository {
     } catch (e, stack) {
       debugPrint('Supabase error: $e');
       debugPrint('Stack: $stack');
+      rethrow;
     }
   }
 
