@@ -2,7 +2,7 @@
 
 Aplicativo mobile de produtividade pessoal que centraliza tarefas, agenda e sessões de foco em um único painel diário, desenvolvido como entrega da Atividade Ponderada 4 do Módulo 10 de Engenharia da Computação.
 
-Vídeo de demonstração da solução:
+Vídeo de demonstração da solução: https://youtu.be/-GF2zJQojiA
 
 
 ## Problema
@@ -98,6 +98,8 @@ dart run build_runner build --delete-conflicting-outputs
 # 4. Rode o projeto em um emulador ou dispositivo conectado
 flutter run
 ```
+
+IMPORTANTE: é necessário executar o aplicativo em um emulador do Android Studio, pois no momento ele só é compatível para android
 
 ### Configuração de variáveis sensíveis
 
